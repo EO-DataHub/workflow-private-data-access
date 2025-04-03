@@ -1,6 +1,6 @@
 ## Example Private Data Access in Workflows
 This repo contains an example Docker image and Common Workflow Language (CWL) Application Package that can be used with the EO DataHub Workflow Runner to demonstrate accessing private data within workflow steps. This includes access via S3, HTTPS and Resource Catalogue APIs.
-To test this workflow, first build this repo using the provided Dockerfile: `docker build -t <image-name>:<tag> .` and then update the following section in the CWL script:
+To test this workflow, first build this repo using the provided Dockerfile: `docker build -t <image-name>:<tag> .` and then push this to a remote repository so the image can be pulled later. Then update the following section in the CWL script:
 ```
 hints:
     DockerRequirement:
