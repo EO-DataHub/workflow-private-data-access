@@ -7,12 +7,17 @@ import boto3
 import click
 import requests
 
+
+
+WORKSPACE_ACCESS_TOKEN = os.getenv("WORKSPACE_ACCESS_TOKEN", "your_api_token_here")
+
+ENV_DEPLOYMENT = os.getenv("ENV_DEPLOYMENT", "test")
+
 RESOURCE_CATLOG_URL = os.getenv(
     "RESOURCE_CATLOG_URL",
-    "https://dev.eodatahub.org.uk/api/catalogue/stac/catalogs/user/catalogs/",
+    f"https://{ENV_DEPLOYMENT}.eodatahub.org.uk/api/catalogue/stac/catalogs/user/catalogs/",
 )
-BUCKET_NAME = os.getenv("BUCKET_NAME", "workspaces-eodhp-dev")
-WORKSPACE_ACCESS_TOKEN = os.getenv("WORKSPACE_ACCESS_TOKEN", "your_api_token_here")
+BUCKET_NAME = os.getenv("BUCKET_NAME", f"workspaces-eodhp-{ENV_DEPLOYMENT}")
 
 
 def check_rc_access(workspace: str, resource_catalogue_url: str, api_token: str):
@@ -34,6 +39,28 @@ def check_rc_access(workspace: str, resource_catalogue_url: str, api_token: str)
     except requests.exceptions.RequestException as e:
         print(
             f"\033[91mError accessing workspace {workspace} in the Resource Catalogue: {e}\033[0m"
+        )
+    return
+
+def check_mount_access(workspace: str):
+    """
+    Check if the workspace is accessible.
+    """
+
+    directory_path = "/workspace/pv-{workspace}-workspace"
+
+    try:
+         # List all files in the directory
+        files = os.listdir(directory_path)
+        if len(files) > 0:
+            print(f"\033[92mWorkspace {workspace} is accessible via mounted block store.\033[0m")
+        else:
+            print(
+                f"\033[91mWorkspace {workspace} is not accessible via mounted block store. Directory is empty.\033[0m"
+            )
+    except FileNotFoundError as e:
+        print(
+            f"\033[91mWorkspace {workspace} is not accessible via mounted block store: {e}\033[0m"
         )
     return
 
@@ -142,7 +169,7 @@ def generate_stac():
 @click.option("--bucket-name", default=BUCKET_NAME, help="S3 bucket name.")
 @click.option(
     "--https-url",
-    default="https://{workspace}.dev.eodatahub-workspaces.org.uk/files/workspaces-eodhp-dev/processing-results.json",
+    default=f"https://{{workspace}}.{ENV_DEPLOYMENT}.eodatahub-workspaces.org.uk/files/workspaces-eodhp-{ENV_DEPLOYMENT}/processing-results.json",
     help="HTTPS URL for workspace.",
 )
 def main(
@@ -159,6 +186,7 @@ def main(
     https_url = https_url.replace("{workspace}", workspace)
     check_https_access(workspace, https_url, api_token)
     check_s3_access(workspace, bucket_name)
+    check_mount_access(workspace)
 
     # Generate example STAC to ensure workflow is successful
     generate_stac()
