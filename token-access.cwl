@@ -19,19 +19,23 @@ $graph:
         label: the workspace to test access for
         doc: workspace to test access
         type: string
-      aws_key:
+      AWS_ACCESS_KEY_ID:
         label: the workspace to test access for
         doc: workspace to test access
         type: string
-      aws_secret_key:
+      AWS_SECRET_ACCESS_KEY:
           label: the workspace to test access for
           doc: workspace to test access
           type: string
-      aws_session_token:
+      AWS_SESSION_TOKEN:
         label: the workspace to test access for
         doc: workspace to test access
         type: string
-      workspace_access_token:
+      WORKSPACE_ACCESS_TOKEN:
+        label: the workspace to test access for
+        doc: workspace to test access
+        type: string
+      environment:
         label: the workspace to test access for
         doc: workspace to test access
         type: string
@@ -45,10 +49,11 @@ $graph:
         run: "#test-access"
         in:
           workspace: workspace
-          aws_key: aws_key
-          aws_secret_key: aws_secret_key
-          aws_session_token: aws_session_token
-          workspace_access_token: workspace_access_token
+          aws_key: AWS_ACCESS_KEY_ID
+          aws_secret_key: AWS_SECRET_ACCESS_KEY
+          aws_session_token: AWS_SESSION_TOKEN
+          workspace_access_token: WORKSPACE_ACCESS_TOKEN
+          environment: environment
         out:
           - results
   # convert.sh - takes input args `--url`
@@ -64,16 +69,19 @@ $graph:
           AWS_SECRET_ACCESS_KEY: $( inputs.aws_secret_key )
           AWS_SESSION_TOKEN: $( inputs.aws_session_token )
           WORKSPACE_ACCESS_TOKEN: $( inputs.workspace_access_token )
+          ENV_DEPLOYMENT: $( inputs.environment )
       InlineJavascriptRequirement: {}
     hints:
       DockerRequirement:
-        dockerPull: public.ecr.aws/eodh/test-token-access:0.0.1
+        dockerPull: public.ecr.aws/eodh/test-token-access:0.0.25
     baseCommand: ["python3", "/app/run.py"]
     inputs:
       workspace:
         type: string
         inputBinding:
           position: 1
+      environment:
+        type: string
       aws_key:
         label: the workspace to test access for
         doc: workspace to test access
