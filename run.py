@@ -47,7 +47,7 @@ def check_mount_access(workspace: str):
     Check if the workspace is accessible.
     """
 
-    directory_path = "/workspace/pv-{workspace}-workspace"
+    directory_path = f"/workspace/pv-{workspace}"
 
     try:
          # List all files in the directory
