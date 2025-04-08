@@ -20,24 +20,19 @@ $graph:
         doc: workspace to test access
         type: string
       AWS_ACCESS_KEY_ID:
-        label: the workspace to test access for
-        doc: workspace to test access
+        label: aws access key for S3 access
         type: string
       AWS_SECRET_ACCESS_KEY:
-          label: the workspace to test access for
-          doc: workspace to test access
+          label: aws secret access key for S3 access
           type: string
       AWS_SESSION_TOKEN:
-        label: the workspace to test access for
-        doc: workspace to test access
+        label: aws session token for S3 access
         type: string
       WORKSPACE_ACCESS_TOKEN:
-        label: the workspace to test access for
-        doc: workspace to test access
+        label: the workspace access token for HTTPS access
         type: string
       environment:
-        label: the workspace to test access for
-        doc: workspace to test access
+        label: the environment to attempt to access
         type: string
     outputs:
       - id: results
@@ -83,20 +78,12 @@ $graph:
       environment:
         type: string
       aws_key:
-        label: the workspace to test access for
-        doc: workspace to test access
         type: string
       aws_secret_key:
-          label: the workspace to test access for
-          doc: workspace to test access
           type: string
       aws_session_token:
-        label: the workspace to test access for
-        doc: workspace to test access
         type: string
       workspace_access_token:
-        label: the workspace to test access for
-        doc: workspace to test access
         type: string
     outputs:
       results:
