@@ -14,3 +14,5 @@ You can now deploy this workflow to the Workflow Runner and execute the request 
   }
 }
 ```
+
+The image is available publicly at public.ecr.aws/eodh/test-token-access, as used in the CWL script.
