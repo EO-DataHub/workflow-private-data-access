@@ -9,15 +9,17 @@ import requests
 
 
 
-WORKSPACE_ACCESS_TOKEN = os.getenv("WORKSPACE_ACCESS_TOKEN", "your_api_token_here")
+WORKSPACE_ACCESS_TOKEN = os.getenv("WORKSPACE_TOKEN", "your_api_token_here")
 
 ENV_DEPLOYMENT = os.getenv("ENV_DEPLOYMENT", "test")
+if ENV_DEPLOYMENT == "prod":
+    ENV_DEPLOYMENT = ""
 
 RESOURCE_CATLOG_URL = os.getenv(
     "RESOURCE_CATLOG_URL",
-    f"https://{ENV_DEPLOYMENT}.eodatahub.org.uk/api/catalogue/stac/catalogs/user/catalogs/",
+    f"https://{ENV_DEPLOYMENT + "." if ENV_DEPLOYMENT else ""}eodatahub.org.uk/api/catalogue/stac/catalogs/user/catalogs/",
 )
-BUCKET_NAME = os.getenv("BUCKET_NAME", f"workspaces-eodhp-{ENV_DEPLOYMENT}")
+BUCKET_NAME = os.getenv("BUCKET_NAME", f"workspaces-eodhp{"-" + ENV_DEPLOYMENT if ENV_DEPLOYMENT else ""}")
 
 
 def check_rc_access(workspace: str, resource_catalogue_url: str, api_token: str):
@@ -27,6 +29,7 @@ def check_rc_access(workspace: str, resource_catalogue_url: str, api_token: str)
     url = f"{resource_catalogue_url}{workspace}"
 
     try:
+        print(f"Testing url {url} for workspace {workspace}")
         response = requests.get(url, headers={"Authorization": f"Bearer {api_token}"})
         if response.status_code == 200:
             print(
@@ -70,6 +73,7 @@ def check_https_access(workspace: str, url: str, api_token: str):
     Check if the workspace is accessible.
     """
     try:
+        print(f"Testing url {url} for workspace {workspace}")
         response = requests.get(url, headers={"Authorization": f"Bearer {api_token}"})
         if response.status_code == 200:
             print(f"\033[92mWorkspace {workspace} is accessible via HTTPS\033[0m")
@@ -169,7 +173,7 @@ def generate_stac():
 @click.option("--bucket-name", default=BUCKET_NAME, help="S3 bucket name.")
 @click.option(
     "--https-url",
-    default=f"https://{{workspace}}.{ENV_DEPLOYMENT}.eodatahub-workspaces.org.uk/files/workspaces-eodhp-{ENV_DEPLOYMENT}/processing-results.json",
+    default=f"https://{{workspace}}{"." + ENV_DEPLOYMENT if ENV_DEPLOYMENT else ""}.eodatahub-workspaces.org.uk/files/workspaces-eodhp{"-" + ENV_DEPLOYMENT if ENV_DEPLOYMENT else ""}/processing-results.json",
     help="HTTPS URL for workspace.",
 )
 def main(
