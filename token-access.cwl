@@ -44,7 +44,7 @@ $graph:
         ramMax: 512
       EnvVarRequirement:
         envDef:
-          WORKSPACE_ACCESS_TOKEN: <<REPLACE>>
+          WORKSPACE_TOKEN: <<REPLACE>>
           ENV_DEPLOYMENT: $( inputs.environment )
       InlineJavascriptRequirement: {}
     hints:
